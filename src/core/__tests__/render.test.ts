@@ -28,7 +28,7 @@ describe('test rendering reactd element to dom', () => {
     test('div with multiple children', () => {
         const childEl = ReactD.createElement('div', null);
         const childE2 = ReactD.createElement('div', null);
-        const el = ReactD.createElement('div', null, [childEl, childE2]);
+        const el = ReactD.createElement('div', null, childEl, childE2);
 
         const parent = document.createElement('div');
 

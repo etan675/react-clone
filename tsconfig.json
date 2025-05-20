@@ -19,7 +19,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "jsx": "react",                      
+    "jsxFactory": "ReactD.createElement",
+    // "jsxFragmentFactory": "myFragment",
   },
-  "include": ["src"]
+  
+  "include": ["src", "src/testjsx.tsx"]
 }

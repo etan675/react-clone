@@ -1,7 +1,8 @@
 import { hasChildren, nodeIsElement } from "./helpers";
 import { ReactDElement, ReactDElementProps, ReactDNode } from "./reactd-types";
 
-const createElement = (type: string, props: ReactDElementProps|null, children?: ReactDNode): ReactDElement => {
+//TODO: type should support functional component
+const createElement = (type: string, props: ReactDElementProps|null, ...children: ReactDNode[]): ReactDElement => {
     let p = {};
 
     if (props !== null) {
@@ -12,7 +13,7 @@ const createElement = (type: string, props: ReactDElementProps|null, children?: 
         type,
         props: {
             ...p,
-            ...children && { children }
+            ...children.length && { children }
         }
     }
 }
