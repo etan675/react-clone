@@ -26,5 +26,5 @@
     // "jsxFragmentFactory": "myFragment",
   },
   
-  "include": ["src", "src/testjsx.tsx"]
+  "include": ["src", "**/*.ts", "**/*.tsx"]
 }

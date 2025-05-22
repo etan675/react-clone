@@ -1,8 +1,7 @@
 import { hasChildren, nodeIsElement } from "./helpers";
 import { ReactDElement, ReactDElementProps, ReactDNode } from "./reactd-types";
 
-//TODO: type should support functional component
-const createElement = (type: string, props: ReactDElementProps|null, ...children: ReactDNode[]): ReactDElement => {
+const createElement = (type: string|Function, props: ReactDElementProps|null, ...children: ReactDNode[]): ReactDElement => {
     let p = {};
 
     if (props !== null) {
@@ -19,31 +18,38 @@ const createElement = (type: string, props: ReactDElementProps|null, ...children
 }
 
 const renderElement = (el: ReactDElement, parent: HTMLElement): void => {
-    const domEl = document.createElement(el.type);
+    if (typeof el.type === 'string') {
+        const domEl = document.createElement(el.type);
 
-    Object.entries(el.props).forEach(([propName, value]) => {
-        if (propName === 'className') {
-            domEl.setAttribute('class', value as string);
-
-        } else if (propName.startsWith('on')) {
-            const eventName = propName.slice(2).toLowerCase();
-            domEl.addEventListener(eventName, value);
+        Object.entries(el.props).forEach(([propName, value]) => {
+            if (propName === 'className') {
+                domEl.setAttribute('class', value as string);
+    
+            } else if (propName.startsWith('on')) {
+                const eventName = propName.slice(2).toLowerCase();
+                domEl.addEventListener(eventName, value);
+            }
+        });
+    
+        if (hasChildren(el)) {
+            const childrenOfEl = (el.props as { children: ReactDNode }).children;
+    
+            if (Array.isArray(childrenOfEl)) {
+                childrenOfEl.forEach(child => {
+                    renderNode(child, domEl);
+                })
+            } else {
+                renderNode(childrenOfEl, domEl);
+            }
         }
-    });
+    
+        parent.appendChild(domEl);
 
-    if (hasChildren(el)) {
-        const childrenOfEl = (el.props as { children: ReactDNode }).children;
-
-        if (Array.isArray(childrenOfEl)) {
-            childrenOfEl.forEach(child => {
-                renderNode(child, domEl);
-            })
-        } else {
-            renderNode(childrenOfEl, domEl);
-        }
+    } else if (typeof el.type === 'function') {
+        // the structure of the functional component as a ReactDElement
+        const newEL = el.type(el.props);
+        renderElement(newEL, parent);
     }
-
-    parent.appendChild(domEl);
 }
 
 const renderNode = (node: ReactDNode, parent: HTMLElement): void => {
@@ -55,10 +61,6 @@ const renderNode = (node: ReactDNode, parent: HTMLElement): void => {
         node.forEach(child => {
             renderNode(child, parent);
         });
-
-    } else if (typeof node === 'function') {
-        //TODO: custom functional component
-        console.log('function: ', );
 
     } else if (typeof node === 'string') {
         const textNode = document.createTextNode(node);

@@ -1,6 +1,6 @@
 
 interface ReactDElement {
-    type: string,
+    type: string|Function,
     props: ReactDElementProps
 }
 
